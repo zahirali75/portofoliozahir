@@ -1,0 +1,913 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Tema: "Cozy Neutral Retreat" — TERANG + blok gelap jangkar
+   Palet dasar TIDAK berubah (keputusan user, 4 Nov 2026):
+     terracotta #b8846e · sage #8d9478 · krem #fdfbf7
+   Yang berubah cara pakainya:
+     · huruf besar jadi bintang utama (serif display sungguhan)
+     · 2 blok gelap sebagai jangkar (hero + kontak)
+     · datar — bayangan dihapus, batas pakai garis tipis
+     · gerak lambat: topeng teks naik, pita berjalan, angka berhitung
+   ============================================================ */
+@theme {
+  --color-cream-50: #fdfbf7;
+  --color-cream-100: #f9f3ea;
+  --color-cream-200: #f5e8d7;
+  --color-cream-300: #ecdcc6;
+
+  --color-terracotta-300: #d8ab95;
+  --color-terracotta-400: #c89880;
+  --color-terracotta-500: #b8846e;
+  --color-terracotta-600: #9e6c58;
+  --color-terracotta-700: #825647;
+  --color-terracotta-800: #6b4539;
+
+  --color-sage-200: #d5d9c8;
+  --color-sage-300: #b9c0a8;
+  --color-sage-400: #8d9478;
+  --color-sage-500: #7c8368;
+  --color-sage-600: #61735a;
+  --color-sage-700: #4b5744;
+
+  --color-ink-500: #6e6054;
+  --color-ink-600: #55493f;
+  --color-ink-700: #453b33;
+  --color-ink-800: #3a3128;
+  --color-ink-900: #2b241d;
+  --color-ink-950: #1f1a15;
+
+  /* Font sungguhan: di-self-host lewat @fontsource (tanpa CDN) */
+  --font-sans: "Inter Variable", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, "Times New Roman", serif;
+
+  /* Tailwind v4: namespace --radius-* menghasilkan utilitas rounded-card */
+  --radius-card: 1rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-cream-50);
+    color: var(--color-ink-800);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-optical-sizing: auto;
+  }
+
+  /* Judul besar: serif display. Bobot normal — Instrument Serif hanya punya 400,
+     dan ukuran besar sendirilah yang membentuk hierarki (cara kerja editorial). */
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-ink-900);
+  }
+
+  h1 {
+    line-height: 1;
+    letter-spacing: -0.025em;
+  }
+
+  h2 {
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  /* Judul kecil tetap sans: pemisah yang jelas antara display dan isi */
+  h3,
+  h4 {
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-terracotta-700);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-terracotta-300);
+    color: var(--color-ink-900);
+  }
+}
+
+@layer utilities {
+  /* Teks panjang dijaga di ~65 karakter agar nyaman dibaca */
+  .prose-narrow {
+    max-width: 65ch;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Serif display sebagai utilitas — bobot dipaksa 400 */
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+
+  /* Label kecil: huruf renggang, kapital, terracotta */
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* ---------------------------------------------------------
+     Kartu ID di hero: ukurannya mengikuti tinggi layar.
+     Di laptop layar pendek (≤830px) kartu & tali menyusut supaya
+     tiga tonggak angka tetap masuk satu layar tanpa menggulir;
+     di layar tinggi ukurannya tetap lega.
+
+     Panjang tali tidak lagi "sisa tinggi kolom": komponen menghitungnya
+     supaya pusat kartu jatuh sejajar pusat nama besar di kolom kiri.
+     --------------------------------------------------------- */
+  .idcard-stage {
+    height: 440px;
+  }
+  .idcard-group {
+    width: 220px;
+  }
+
+  @media (min-width: 640px) {
+    .idcard-stage {
+      height: 470px;
+    }
+    .idcard-group {
+      width: 252px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    /* Tinggi kolom kartu ikut tinggi layar: di layar tinggi ada lebih
+       banyak ruang untuk tali, jadi kartu tidak perlu menempel ke rel. */
+    .idcard-stage {
+      height: max(560px, 58svh);
+    }
+    /* Kartu dibuat sedikit lebih kecil dari sebelumnya (300px): dengan
+       tinggi kolom 560px, kartu 300px menghabiskan hampir seluruh kolom
+       sehingga tidak ada sisa panjang untuk tali — kartu memaksa dirinya
+       menempel di dasar kolom. Ukuran ini menyisakan ruang tali sehingga
+       pusat kartu bisa jatuh sejajar pusat nama. */
+    .idcard-group {
+      width: 256px;
+    }
+  }
+
+  @media (min-width: 1024px) and (max-height: 830px) {
+    /* Laptop layar pendek: panggung ditinggikan sedikit (bukan dipatok
+       486px) supaya tali tetap punya panjang wajar, tapi masih
+       menyisakan ruang di bawah untuk tonggak angka. */
+    .idcard-stage {
+      height: clamp(486px, 68svh, 560px);
+    }
+    .idcard-group {
+      width: 200px;
+    }
+  }
+
+  /* Petunjuk "tarik kartunya": chip kecil di bawah kartu. Muncul sekali,
+     lalu memudar setelah tarikan pertama. Gerakannya dihentikan oleh
+     prefers-reduced-motion di bawah.
+
+     Animasi ini hanya menggeser (translateY) — opacity ditangani kelas
+     Tailwind, supaya animasi keyframe tidak bertengkar dengan fade-out
+     saat kartu selesai ditarik. */
+  .idcard-hint {
+    animation: hint-bob 2.8s ease-in-out infinite;
+  }
+
+  @keyframes hint-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  /* Laptop layar sangat pendek (≤780px): rapatkan pad & tonggak angka
+     supaya baris angka tetap terlihat tanpa menggulir. */
+  @media (min-width: 1024px) and (max-height: 780px) {
+    .hero-pad {
+      padding-bottom: 1.5rem;
+    }
+    .hero-milestones {
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+    }
+  }
+
+  /* Teks besar tapi tetap rapat — dipakai untuk judul hero.
+     Ukurannya mengikuti tinggi jendela juga (svh), bukan cuma lebar,
+     supaya di laptop layar pendek (1280x720) nama tidak menelan layar
+     dan tonggak angka tetap terlihat tanpa menggulir. */
+  .display-xl {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    font-size: clamp(2.5rem, min(9.6vw, 13.5svh), 8.5rem);
+  }
+
+  .display-lg {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    font-size: clamp(2rem, 5.5vw, 3.75rem);
+  }
+
+  /* Blok gelap jangkar: sumber warna ink-900 / ink-950 */
+  .anchor-dark {
+    background-color: var(--color-ink-950);
+    color: #d9cfc3;
+  }
+
+  .anchor-dark h1,
+  .anchor-dark h2,
+  .anchor-dark h3,
+  .anchor-dark h4 {
+    color: var(--color-cream-50);
+  }
+
+  /* Butir-butir halus: serat kertas pada blok gelap agar tidak terasa plastik */
+  .grain {
+    position: relative;
+  }
+
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Elemen yang menunggu animasi: hanya disembunyikan bila JS aktif
+     (kelas .js di <html>), supaya konten tetap tampil bila JS gagal.
+     Transisi ke keadaan terlihat dikendalikan lewat useReveal. */
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ---------------------------------------------------------
+     Topeng teks: kata naik dari balik garis potong saat dimuat.
+     Ini gerak yang dipakai aeqonis.tech — murni CSS, tanpa library.
+     --------------------------------------------------------- */
+  .mask-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+  }
+
+  .mask-line > span {
+    display: block;
+    will-change: transform;
+  }
+
+  .js .mask-line > span {
+    transform: translateY(115%);
+    animation: mask-rise 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes mask-rise {
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  /* ---------------------------------------------------------
+     Pita berjalan. Durasi sengaja panjang: geraknya mengalir,
+     bukan menyambar.
+     --------------------------------------------------------- */
+  .marquee {
+    overflow: hidden;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-slide 46s linear infinite;
+  }
+
+  @keyframes marquee-slide {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Garis rambut pengganti bayangan — pemisah yang tenang */
+  .hairline {
+    border-color: var(--color-cream-300);
+  }
+
+  .anchor-dark .hairline {
+    border-color: rgb(255 255 255 / 0.12);
+  }
+
+  /* ---------------------------------------------------------
+     Tombol pill dengan cincin iridescent.
+     Mekanikanya mengikuti referensi: cincin = conic-gradient yang
+     dipotong topeng radial, sehingga hanya 2.5px terluar yang
+     tampak (garis rambut), lalu diputar. Dua animasi berbeda pada
+     satu elemen: orbit (putaran) dan hue (pergeseran warna),
+     keduanya dihentikan terpisah saat hover — busurnya berhenti
+     di posisinya, warnanya tetap bergeser.
+
+     Warna busur diambil dari palet proyek, bukan pink/cyan dari
+     referensi, karena palet dasar terkunci.
+     --------------------------------------------------------- */
+  .pill-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 20px 9px 9px;
+    border-radius: 999px;
+    background: rgb(31 26 21 / 0.045);
+    border: 1px solid var(--color-cream-300);
+    color: var(--color-ink-800);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .pill-button-disc {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--color-ink-950);
+    color: var(--color-cream-50);
+    flex: none;
+  }
+
+  /* Panah di atas cincin */
+  .pill-button-arrow {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Cincin: gradien konik yang dipotong, jadi hanya tepi luar yang tampak.
+     -webkit-mask dipakai untuk Safari. */
+  .pill-button-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    background: conic-gradient(
+      from 0turn,
+      transparent 0 58%,
+      var(--color-terracotta-500) 68%,
+      var(--color-cream-50) 76%,
+      var(--color-sage-400) 84%,
+      transparent 92%
+    );
+    -webkit-mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 2.5px),
+      #000 calc(100% - 2.5px)
+    );
+    mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 2.5px),
+      #000 calc(100% - 2.5px)
+    );
+    animation: pill-orbit 2.6s linear infinite, pill-hue 7s linear infinite;
+  }
+
+  /* Dua animasi pada satu elemen, dikendalikan terpisah */
+  .pill-button:hover .pill-button-ring {
+    animation-play-state: paused, running;
+  }
+
+  .pill-button:hover {
+    background: rgb(31 26 21 / 0.07);
+    border-color: var(--color-terracotta-400);
+  }
+
+  .pill-button:hover .pill-button-arrow {
+    transform: translateX(3px);
+  }
+
+  @keyframes pill-orbit {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @keyframes pill-hue {
+    to {
+      filter: hue-rotate(360deg);
+    }
+  }
+
+  .pill-button-label {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* =========================================================
+     Tumpukan kartu proyek.
+     Kartu depan di tengah; kartu di belakangnya mengintip ke
+     kanan-bawah, sedikit mengecil dan miring — jadi tumpukannya
+     terbaca sebagai satu berkas, bukan kartu yang bertumpuk rata.
+
+     Warna tiap kartu datang dari --c (ikut palet proyek).
+     ========================================================= */
+  .stack-wrap {
+    position: relative;
+  }
+
+  /* Pemotong: kartu yang jatuh hilang di bawah, bukan menutupi
+     tombol kendali maupun blok angka sesudahnya. */
+  .stack-clip {
+    position: relative;
+    overflow: hidden;
+    /* sedikit ruang lebih supaya tepi bawah kartu belakang tidak terpangkas */
+    padding-bottom: 18px;
+    margin-bottom: -18px;
+  }
+
+  .stack-stage {
+    position: relative;
+    /* ruang untuk kartu yang mengintip ke kanan + turun sedikit */
+    width: calc(var(--stack-w) + var(--stack-offset) * (var(--stack-n) - 1));
+    height: calc(var(--stack-w) * 0.64 + 16px * (var(--stack-n) - 1));
+    outline-offset: 6px;
+  }
+
+  .stack-stage {
+    --stack-w: clamp(280px, min(52vw, 560px), 560px);
+    --stack-offset: 24px;
+    --stack-n: 2;
+  }
+
+  @media (max-width: 640px) {
+    .stack-stage {
+      --stack-w: min(86vw, 420px);
+      --stack-offset: 11px;
+    }
+  }
+
+  .stack-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--stack-w);
+    border-radius: 10px;
+    background: var(--c, var(--color-cream-100));
+    border: 1px solid rgb(31 26 21 / 0.12);
+    /* kartu belakang jangan menghalangi gulir halaman di ponsel;
+       kartu depan boleh diseret, jadi sentuhannya kita pegang */
+    touch-action: pan-y;
+    cursor: grab;
+    user-select: none;
+  }
+
+  .stack-card[data-front] {
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .stack-card[data-front]:active {
+    cursor: grabbing;
+  }
+
+  .stack-card-inner {
+    display: grid;
+    grid-template-columns: 38% 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 14px 20px;
+    padding: 16px;
+    height: calc(var(--stack-w) * 0.64);
+    box-sizing: border-box;
+  }
+
+  /* kiri atas: tangkapan layar */
+  .stack-shot {
+    grid-column: 1;
+    grid-row: 1;
+    border-radius: 7px;
+    overflow: hidden;
+    background: rgb(31 26 21 / 0.06);
+    aspect-ratio: 16 / 10;
+  }
+
+  .stack-shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+  }
+
+  /* kanan: deskripsi */
+  .stack-desc {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-width: 0;
+  }
+
+  .stack-meta {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+
+  .stack-oneliner {
+    margin-top: 8px;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  .stack-stack {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .stack-stack li {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgb(31 26 21 / 0.07);
+  }
+
+  /* kiri bawah: nama proyek */
+  .stack-foot {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .stack-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3vw, 2.75rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .stack-nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .stack-btn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .stack-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .stack-btn-ghost {
+    border: 1px solid var(--color-cream-300);
+    color: var(--color-ink-700);
+    background: transparent;
+  }
+
+  .stack-btn-ghost:hover {
+    border-color: var(--color-terracotta-400);
+    background: var(--color-cream-100);
+  }
+
+  .stack-btn-solid {
+    background: var(--color-ink-950);
+    color: var(--color-cream-50);
+  }
+
+  .stack-btn-solid:hover {
+    background: var(--color-ink-900);
+  }
+
+  /* Petunjuk sekali pakai: hilang setelah tarikan pertama */
+  .stack-hint {
+    margin-left: 6px;
+    transition: opacity 0.5s ease;
+  }
+
+  .stack-hint-text {
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--color-ink-600);
+    animation: hint-bob 2.8s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  /* Kartu bernada gelap: teks terang, chip ikut terang */
+  .stack-card[data-tone="dark"] {
+    color: var(--color-cream-50);
+    border-color: rgb(255 255 255 / 0.14);
+  }
+
+  .stack-card[data-tone="dark"] .stack-stack li {
+    background: rgb(255 255 255 / 0.12);
+  }
+
+  .stack-card[data-tone="dark"] .stack-shot {
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  /* Ponsel: kartu lanskap terlalu sempit untuk empat blok isi, jadi
+     isinya ditumpuk vertikal dan tingginya mengikuti isi (panggungnya
+     diukur dari JS). Ditulis paling akhir agar menang atas aturan dasar. */
+  @media (max-width: 640px) {
+    .stack-card-inner {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      height: auto;
+      gap: 14px;
+    }
+
+    .stack-shot {
+      grid-column: 1;
+      grid-row: 1;
+      aspect-ratio: 16 / 9;
+    }
+
+    .stack-desc {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .stack-foot {
+      grid-column: 1;
+      grid-row: 3;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .stack-title {
+      font-size: clamp(1.6rem, 8vw, 2.1rem);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .js .mask-line > span {
+    transform: none;
+    animation: none;
+  }
+
+  .marquee-track {
+    animation: none;
+  }
+
+  .idcard-hint {
+    animation: none;
+  }
+
+  /* Cincin iridescent: kedua animasi mati, busur berhenti di sudut tetap */
+  .pill-button-ring {
+    animation: none;
+    filter: hue-rotate(30deg);
+  }
+
+  /* Tumpukan kartu: transisi mati, perpindahan jadi seketika */
+  .stack-card {
+    transition: none !important;
+  }
+
+  .stack-hint-text {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Carousel kaca-lensa (Glass Carousel)
+   Referensi: strip 2D digambar ke kanvas luring, lalu dibengkokkan
+   lewat shader WebGL "lensa kaca" — tepi membesar & melengkung,
+   RGB terpisah, lengkung menguat mengikuti kecepatan.
+   Ditulis ulang tanpa GSAP: tween + gelung requestAnimationFrame.
+   Warna mengikuti palet proyek (krem/terracotta), bukan netral putih.
+   ============================================================ */
+.glass-carousel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-cream-300);
+  background: var(--color-cream-100);
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.glass-carousel:active {
+  cursor: grabbing;
+}
+
+/* Panggung = kotak gambar. Tingginya dipatok di sini; baris keterangan
+   di bawahnya tidak ikut diukur kanvas. */
+.glass-carousel__stage {
+  position: relative;
+  width: 100%;
+  height: clamp(300px, 30vw, 420px);
+}
+
+.glass-carousel__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.glass-carousel__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-top: -20px;
+  border-radius: 999px;
+  border: 1px solid var(--color-cream-300);
+  background: rgb(253 251 247 / 0.9);
+  color: var(--color-ink-700);
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.glass-carousel__nav:hover {
+  background: var(--color-cream-50);
+}
+
+.glass-carousel__nav svg {
+  width: 15px;
+  height: 15px;
+}
+
+.glass-carousel__nav--prev {
+  left: 14px;
+}
+
+.glass-carousel__nav--next {
+  right: 14px;
+}
+
+/* Keterangan: baris sendiri di bawah panggung, di luar kanvas. */
+.glass-carousel__foot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 56px 18px;
+  text-align: center;
+  border-top: 1px solid var(--color-cream-300);
+  background: var(--color-cream-50);
+}
+
+/* Topeng: kata masuk dari bawah, terpotong rapi di tepinya. */
+.glass-carousel__mask {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.glass-carousel__title {
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-ink-900);
+  line-height: 1.3;
+}
+
+.glass-word {
+  display: inline-block;
+  animation: glass-word-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes glass-word-in {
+  from {
+    transform: translateY(105%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.glass-carousel__sub {
+  font-size: 0.75rem;
+  color: var(--color-ink-600);
+  animation: glass-sub-in 0.6s ease both;
+}
+
+@keyframes glass-sub-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .glass-carousel__stage {
+    height: clamp(250px, 66vw, 340px);
+  }
+
+  .glass-carousel__nav {
+    width: 34px;
+    height: 34px;
+    margin-top: -17px;
+  }
+
+  .glass-carousel__nav--prev {
+    left: 8px;
+  }
+
+  .glass-carousel__nav--next {
+    right: 8px;
+  }
+
+  .glass-carousel__foot {
+    padding: 12px 20px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-word,
+  .glass-carousel__sub {
+    animation: none;
+  }
+}

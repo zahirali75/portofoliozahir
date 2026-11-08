@@ -1,0 +1,89 @@
+import { Link } from 'react-router-dom'
+import { useLocale } from '../../lib/locale'
+import { projects } from '../../data/projects'
+import { Counter, Eyebrow, Section } from '../ui'
+import { PillButton } from '../ui/PillButton'
+import type { Project } from '../../data/types'
+
+function Card({ p, index }: { p: Project; index: number }) {
+  const { t } = useLocale()
+  const number = String(index + 1).padStart(2, '0')
+
+  return (
+    <article className="group" data-reveal>
+      <Link to={`/proyek/${p.slug}`} className="block">
+        {/* Nomor besar + garis: susunan editorial, bukan kartu mengambang */}
+        <div className="flex items-baseline gap-4 border-t-2 border-ink-900 pt-4">
+          <span className="font-display text-3xl text-terracotta-700">{number}</span>
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs text-ink-600">
+            <span>{p.year}</span>
+            <span aria-hidden="true">·</span>
+            <span>{p.status}</span>
+          </div>
+        </div>
+
+        <h3 className="font-display mt-4 text-4xl text-ink-900 transition-colors group-hover:text-terracotta-700 sm:text-5xl">
+          {p.title}
+        </h3>
+        <p className="prose-narrow mt-3 text-ink-700">{p.oneLiner}</p>
+
+        <div className="mt-7 overflow-hidden rounded-card border border-cream-300 bg-cream-100">
+          <img
+            src={p.cover}
+            alt={`Tangkapan layar ${p.title}`}
+            loading="lazy"
+            decoding="async"
+            width={1280}
+            height={800}
+            className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
+          />
+        </div>
+
+        <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-2">
+          {p.stack.slice(0, 6).map((s) => (
+            <li key={s} className="text-xs font-medium tracking-wide text-ink-600 uppercase">
+              {s}
+            </li>
+          ))}
+          {p.stack.length > 6 ? (
+            <li className="text-xs text-ink-500">+{p.stack.length - 6}</li>
+          ) : null}
+        </ul>
+
+        <span className="mt-7 block">
+          <PillButton label={t.projects.viewDetail} />
+        </span>
+      </Link>
+    </article>
+  )
+}
+
+export function Projects() {
+  const { t, locale } = useLocale()
+  const list = projects[locale]
+
+  return (
+    <Section id="proyek" title={t.projects.title} eyebrow={t.projects.eyebrow} lead={t.projects.lead}>
+      <div className="space-y-16">
+        {list.map((p, i) => (
+          <Card key={p.slug} p={p} index={i} />
+        ))}
+      </div>
+
+      {/* Ringkasan angka: dikumpulkan dari data proyek, bukan diketik ulang */}
+      <div className="mt-16 anchor-dark grain rounded-card px-8 py-10 sm:px-12" data-reveal>
+        <Eyebrow light>{t.projects.factsTitle}</Eyebrow>
+        <dl className="mt-8 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6">
+          {list[0]?.results.map((r) => (
+            <div key={r.label}>
+              <dd className="font-display text-4xl text-terracotta-300 sm:text-5xl">
+                <Counter value={r.value} />
+              </dd>
+              <dt className="mt-2 text-xs leading-snug text-[#a89c8e]">{r.label}</dt>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </Section>
+  )
+}

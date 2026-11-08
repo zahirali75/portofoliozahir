@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Kelas .js dipasang sebelum paint: konten yang menunggu animasi
+         disembunyikan lebih awal sehingga tidak ada kedipan. Bila JS mati,
+         kelas ini tidak pernah ada dan seluruh konten tetap terlihat. -->
+    <script>
+      document.documentElement.classList.add('js')
+    </script>
+
+    <title>Zahir Ali Izzaturrahman — Mahasiswa Sains Data</title>
+    <meta
+      name="description"
+      content="Portofolio Zahir Ali Izzaturrahman — mahasiswa Sains Data, hafiz 15 juz, pengembang full stack. Proyek CineList, pengalaman, dan kontak."
+    />
+    <meta name="author" content="Zahir Ali Izzaturrahman" />
+    <meta name="theme-color" content="#B8846E" />
+    <link rel="canonical" href="https://zahir-ali.vercel.app/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:url" content="https://zahir-ali.vercel.app/" />
+    <meta property="og:title" content="Zahir Ali Izzaturrahman — Mahasiswa Sains Data" />
+    <meta
+      property="og:description"
+      content="Mahasiswa Sains Data — hafiz 15 juz, pengembang full stack. Proyek CineList: aplikasi watchlist film dengan FastAPI + React."
+    />
+    <meta property="og:image" content="https://zahir-ali.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Zahir Ali Izzaturrahman — Mahasiswa Sains Data" />
+    <meta name="twitter:image" content="https://zahir-ali.vercel.app/og-image.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Zahir Ali Izzaturrahman",
+        "url": "https://zahir-ali.vercel.app/",
+        "jobTitle": "Mahasiswa Sains Data",
+        "alumniOf": "Cakrawala University",
+        "knowsAbout": ["Data Science", "Python", "FastAPI", "React", "PostgreSQL"],
+        "sameAs": [
+          "https://github.com/zahirali75",
+          "https://www.linkedin.com/in/zahir-ali-55b1b3382"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Tema: "Cozy Neutral Retreat" — TERANG (keputusan A1)
+   Terracotta + sage di atas krem hangat. Menggantikan tema
+   gelap + emas #e6ca82 yang tertulis di PRD lama bagian 9.
+   ============================================================ */
+@theme {
+  --color-cream-50: #fdfbf7;
+  --color-cream-100: #f9f3ea;
+  --color-cream-200: #f5e8d7;
+  --color-cream-300: #ecdcc6;
+
+  --color-terracotta-300: #d8ab95;
+  --color-terracotta-400: #c89880;
+  --color-terracotta-500: #b8846e;
+  --color-terracotta-600: #9e6c58;
+  --color-terracotta-700: #825647;
+
+  --color-sage-200: #d5d9c8;
+  --color-sage-300: #b9c0a8;
+  --color-sage-400: #8d9478;
+  --color-sage-500: #7c8368;
+  --color-sage-600: #61735a;
+
+  --color-ink-500: #6e6054;
+  --color-ink-600: #55493f;
+  --color-ink-700: #453b33;
+  --color-ink-800: #3a3128;
+  --color-ink-900: #2b241d;
+
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+
+  /* Tailwind v4: namespace --radius-* menghasilkan utilitas rounded-card */
+  --radius-card: 1rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-cream-50);
+    color: var(--color-ink-800);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    color: var(--color-ink-900);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-terracotta-600);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-terracotta-300);
+    color: var(--color-ink-900);
+  }
+}
+
+@layer utilities {
+  /* Teks panjang dijaga di ~65 karakter agar nyaman dibaca */
+  .prose-narrow {
+    max-width: 65ch;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Elemen yang menunggu animasi GSAP: hanya disembunyikan bila JS aktif
+     (kelas .js di <html>), supaya konten tetap tampil bila JS gagal. */
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
